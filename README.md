@@ -7,15 +7,25 @@ Rich Markdown preview extension for VS Code.
 - Editing stays entirely in VS Code's native Markdown text editor; this extension only
   provides the preview.
 - Preview follows the current VS Code color theme automatically (no custom theme).
+- UI text follows VS Code's display language: English by default, Simplified Chinese
+  when `vscode.env.language` is `zh-cn` (covers both the manifest strings — command/
+  setting titles — and everything shown inside the preview webview).
 - Configurable preview font: general/UI font, Chinese (CJK) font (defaults to the OS
   system font), and code-block font (defaults to the editor's monospace font).
 - One-click toggle between "Edit Source" and "Open Preview" from the editor title bar.
 - Optional default preview: open `.md` files straight into the rich preview.
-- Select text in the preview to add inline-highlighted comments (批注); a right-side
-  panel lists all comments for the file, click either the highlight or the list entry
-  to scroll to and flash the other. Send all comments to Copilot Chat in one click —
-  the file is attached to the chat request as a real attachment (via `attachFiles`),
-  together with a written summary of each comment.
+- Select text — or hover a line and use the button that appears at its end — to add an
+  inline-highlighted comment; a right-side panel lists all comments for the file, click
+  either the highlight or the list entry to scroll to and flash the other. The comment
+  popover uses standard "Cancel" (secondary) / "Add Comment" (primary) buttons and
+  always follows the selection or hovered line.
+- Send all comments to Copilot Chat in one click. Each comment that resolves to a
+  source line range is attached as its own `file.md:start-end` ranged attachment (via
+  `attachFiles`), and the query text mentions the same range inline using the real
+  `#file:relPath:start-end` chat variable syntax. Note: VS Code only renders `#file:`
+  mentions as a highlighted chip when picked from its own autocomplete; text seeded
+  through the extension API shows up as plain text (still correct/readable), not a
+  colored chip — this is a VS Code platform limitation, not a bug in this extension.
 - Rich rendering: GitHub-flavored Markdown, LaTeX math (KaTeX), and Mermaid diagrams,
   styled to match VS Code's native look (codicon icons, native typography/spacing).
 
