@@ -1,0 +1,14 @@
+{
+	"extension.description": "Rich Markdown preview with LaTeX/Mermaid support, theme-aware, editable comments sent to Copilot Chat.",
+	"customEditor.displayName": "Markdown Preview",
+	"command.showSource.title": "Markdown Rich Preview: Edit Source",
+	"command.showPreview.title": "Markdown Rich Preview: Open Preview",
+	"command.clearComments.title": "Markdown Rich Preview: Clear Comments",
+	"configuration.title": "Markdown Rich Preview",
+	"configuration.fontFamily.description": "UI text font family used in the preview. Leave empty to follow the editor font.",
+	"configuration.chineseFontFamily.description": "Font family used for Chinese (CJK) text in the preview. Leave empty to follow the OS system font.",
+	"configuration.codeFontFamily.description": "Font family used for code blocks in the preview. Leave empty to follow the editor's (monospace) font.",
+	"configuration.fontSize.description": "Font size (px) used in the preview. Set to 0 to follow the editor font size.",
+	"configuration.lineHeight.description": "Line height used in the preview.",
+	"configuration.openAsDefault.description": "Open .md files with this preview by default instead of the native text editor."
+}

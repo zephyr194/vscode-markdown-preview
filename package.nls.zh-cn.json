@@ -1,0 +1,14 @@
+{
+	"extension.description": "富文本 Markdown 预览，支持 LaTeX/Mermaid、跟随主题，可将评论发送到 Copilot Chat。",
+	"customEditor.displayName": "Markdown 预览",
+	"command.showSource.title": "Markdown Rich Preview: 编辑源码",
+	"command.showPreview.title": "Markdown Rich Preview: 打开预览",
+	"command.clearComments.title": "Markdown Rich Preview: 清空评论",
+	"configuration.title": "Markdown Rich Preview",
+	"configuration.fontFamily.description": "预览中使用的 UI 文本字体。留空则跟随编辑器字体。",
+	"configuration.chineseFontFamily.description": "预览中中文（CJK）文本使用的字体。留空则跟随操作系统默认字体。",
+	"configuration.codeFontFamily.description": "预览中代码块使用的字体。留空则跟随编辑器的等宽字体。",
+	"configuration.fontSize.description": "预览中使用的字体大小（像素）。设为 0 则跟随编辑器字体大小。",
+	"configuration.lineHeight.description": "预览中使用的行高。",
+	"configuration.openAsDefault.description": "默认使用本预览打开 .md 文件，而不是原生文本编辑器。"
+}

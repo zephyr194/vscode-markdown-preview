@@ -1,7 +1,7 @@
 {
   "name": "vscode-markdown-preview",
   "displayName": "Markdown Rich Preview",
-  "description": "Rich Markdown preview with LaTeX/Mermaid support, theme-aware, editable annotations sent to Copilot Chat.",
+  "description": "%extension.description%",
   "version": "0.1.0",
   "publisher": "your-publisher",
   "license": "Apache-2.0",
@@ -17,7 +17,7 @@
     "customEditors": [
       {
         "viewType": "richMarkdownPreview.editor",
-        "displayName": "Markdown Preview",
+        "displayName": "%customEditor.displayName%",
         "selector": [
           {
             "filenamePattern": "*.md"
@@ -29,17 +29,17 @@
     "commands": [
       {
         "command": "richMarkdownPreview.showSource",
-        "title": "Markdown Rich Preview: Edit Source",
+        "title": "%command.showSource.title%",
         "icon": "$(edit)"
       },
       {
         "command": "richMarkdownPreview.showPreview",
-        "title": "Markdown Rich Preview: Open Preview",
+        "title": "%command.showPreview.title%",
         "icon": "$(open-preview)"
       },
       {
         "command": "richMarkdownPreview.clearComments",
-        "title": "Markdown Rich Preview: Clear Comments"
+        "title": "%command.clearComments.title%"
       }
     ],
     "menus": {
@@ -57,37 +57,37 @@
       ]
     },
     "configuration": {
-      "title": "Markdown Rich Preview",
+      "title": "%configuration.title%",
       "properties": {
         "richMarkdownPreview.fontFamily": {
           "type": "string",
           "default": "",
-          "description": "UI text font family used in the preview. Leave empty to follow the editor font."
+          "description": "%configuration.fontFamily.description%"
         },
         "richMarkdownPreview.chineseFontFamily": {
           "type": "string",
           "default": "",
-          "description": "Font family used for Chinese (CJK) text in the preview. Leave empty to follow the OS system font."
+          "description": "%configuration.chineseFontFamily.description%"
         },
         "richMarkdownPreview.codeFontFamily": {
           "type": "string",
           "default": "",
-          "description": "Font family used for code blocks in the preview. Leave empty to follow the editor's (monospace) font."
+          "description": "%configuration.codeFontFamily.description%"
         },
         "richMarkdownPreview.fontSize": {
           "type": "number",
           "default": 0,
-          "description": "Font size (px) used in the preview. Set to 0 to follow the editor font size."
+          "description": "%configuration.fontSize.description%"
         },
         "richMarkdownPreview.lineHeight": {
           "type": "number",
           "default": 1.6,
-          "description": "Line height used in the preview."
+          "description": "%configuration.lineHeight.description%"
         },
         "richMarkdownPreview.openAsDefault": {
           "type": "boolean",
           "default": false,
-          "description": "Open .md files with this preview by default instead of the native text editor."
+          "description": "%configuration.openAsDefault.description%"
         }
       }
     }
