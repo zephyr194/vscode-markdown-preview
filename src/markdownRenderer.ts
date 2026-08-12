@@ -38,11 +38,25 @@ const mermaidBlockPlugin: Plugin<[], Root> = () => (tree) => {
 	});
 };
 
+/** Stamps each hast element with its Markdown source line range so the webview can map a DOM node back to `file.md:start-end`. */
+const sourceLinePlugin: Plugin<[], Root> = () => (tree) => {
+	visit(tree, 'element', (node: Element) => {
+		if (node.position) {
+			node.properties = {
+				...node.properties,
+				dataLineStart: node.position.start.line,
+				dataLineEnd: node.position.end.line,
+			};
+		}
+	});
+};
+
 const processor = unified()
 	.use(remarkParse)
 	.use(remarkGfm)
 	.use(remarkMath)
 	.use(remarkRehype, { allowDangerousHtml: true })
+	.use(sourceLinePlugin)
 	.use(rehypeRaw)
 	.use(mermaidBlockPlugin)
 	.use(rehypeKatex)

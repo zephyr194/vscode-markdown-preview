@@ -3,17 +3,21 @@ export interface Comment {
 	quote: string;
 	comment: string;
 	createdAt: number;
+	lineStart?: number;
+	lineEnd?: number;
 }
 
 export class CommentStore {
 	private readonly byUri = new Map<string, Comment[]>();
 
-	add(uri: string, id: string, quote: string, comment: string): Comment {
+	add(uri: string, id: string, quote: string, comment: string, lineStart?: number, lineEnd?: number): Comment {
 		const entry: Comment = {
 			id,
 			quote,
 			comment,
 			createdAt: Date.now(),
+			lineStart,
+			lineEnd,
 		};
 		const list = this.byUri.get(uri) ?? [];
 		list.push(entry);
@@ -27,6 +31,13 @@ export class CommentStore {
 			return;
 		}
 		this.byUri.set(uri, list.filter((entry) => entry.id !== id));
+	}
+
+	update(uri: string, id: string, comment: string): void {
+		const entry = this.byUri.get(uri)?.find((item) => item.id === id);
+		if (entry) {
+			entry.comment = comment;
+		}
 	}
 
 	clear(uri: string): void {

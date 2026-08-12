@@ -104,23 +104,26 @@ body {
 
 #content code {
 	font-family: var(--md-font-family-code, var(--vscode-editor-font-family));
-	background-color: var(--vscode-textCodeBlock-background);
-	padding: 0.1em 0.3em;
-	border-radius: 3px;
+	color: var(--vscode-textPreformat-foreground);
+	background-color: var(--vscode-textPreformat-background);
+	padding: 1px 3px;
+	border-radius: 4px;
 }
 
 #content pre {
 	position: relative;
 	background-color: var(--vscode-textCodeBlock-background);
 	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
-	padding: 0.75em 1em;
-	border-radius: 4px;
+	padding: 16px;
+	border-radius: 3px;
 	overflow-x: auto;
 }
 
 #content pre code {
+	color: var(--vscode-editor-foreground);
 	background: none;
 	padding: 0;
+	border-radius: 0;
 }
 
 #content pre.mermaid {
@@ -130,8 +133,9 @@ body {
 }
 
 #content blockquote {
-	border-left: 3px solid var(--vscode-textBlockQuote-border);
+	border-left: 5px solid var(--vscode-textBlockQuote-border);
 	background-color: var(--vscode-textBlockQuote-background);
+	border-radius: 2px;
 	margin: 0.5em 0;
 	padding: 0.4em 1em;
 }
@@ -174,10 +178,12 @@ body {
 }
 
 .comment-highlight {
-	background-color: var(--vscode-editor-findMatchHighlightBackground, rgba(255, 224, 130, 0.4));
+	background-color: var(--vscode-editor-findMatchHighlightBackground, rgba(255, 196, 0, 0.35));
+	border-bottom: 2px solid var(--vscode-focusBorder, #007fd4);
 	color: inherit;
 	cursor: pointer;
 	border-radius: 2px;
+	padding: 0 1px;
 }
 
 .comment-flash {
@@ -185,51 +191,97 @@ body {
 	outline-offset: 1px;
 }
 
-.comment-toolbar,
+.comment-toolbar {
+	position: absolute;
+	z-index: 10;
+}
+
+/** Extra border/shadow on top of .btn-primary so the trigger stays legible without a container box. */
+.comment-toolbar .btn {
+	border: 1px solid var(--vscode-button-border, transparent);
+	box-shadow: var(--vscode-widget-shadow, 0 1px 4px rgba(0, 0, 0, 0.25));
+	opacity: 1;
+}
+
+.comment-line-btn {
+	position: absolute;
+	z-index: 9;
+	width: 22px;
+	height: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	cursor: pointer;
+	color: var(--vscode-icon-foreground);
+	background-color: var(--vscode-editorWidget-background);
+	border: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+}
+
+.comment-line-btn:hover {
+	background-color: var(--vscode-toolbar-hoverBackground);
+}
+
 .comment-input {
 	position: absolute;
 	z-index: 10;
 	background-color: var(--vscode-editorWidget-background);
 	border: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
-	border-radius: 3px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-	padding: 4px;
+	border-radius: 6px;
+	box-shadow: var(--vscode-widget-shadow, 0 2px 8px rgba(0, 0, 0, 0.24));
+	padding: 10px;
 }
 
-.comment-toolbar button,
-.comment-input button,
-.comments-panel button.primary-btn {
+.btn {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
-	background-color: var(--vscode-button-background);
-	color: var(--vscode-button-foreground);
 	border: none;
 	border-radius: 5px;
-	padding: 4px 10px;
+	padding: 4px 12px;
 	cursor: pointer;
 	font-size: 0.9em;
 }
 
-.comment-toolbar button:hover,
-.comment-input button:hover,
-.comments-panel button.primary-btn:hover {
+.btn-primary {
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+}
+
+.btn-primary:hover {
 	background-color: var(--vscode-button-hoverBackground);
+}
+
+.btn-secondary {
+	background-color: var(--vscode-button-secondaryBackground);
+	color: var(--vscode-button-secondaryForeground);
+}
+
+.btn-secondary:hover {
+	background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
 .comment-input {
 	width: 260px;
 }
 
-.comment-input textarea {
+.textarea-control {
 	width: 100%;
 	box-sizing: border-box;
+	min-height: 48px;
 	background-color: var(--vscode-input-background);
 	color: var(--vscode-input-foreground);
 	border: 1px solid var(--vscode-input-border);
 	border-radius: 3px;
 	resize: vertical;
 	font-family: inherit;
+	outline: none;
+	padding: 6px 8px;
+}
+
+.textarea-control:focus {
+	outline: 1px solid var(--vscode-focusBorder);
+	outline-offset: -1px;
 }
 
 .comment-input-actions {
@@ -244,54 +296,86 @@ body {
 	position: sticky;
 	top: 0;
 	height: 100vh;
-	overflow-y: auto;
+	overflow: hidden;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
 	background-color: var(--vscode-editorWidget-background);
 	border-left: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
 	padding: 0.75em 1em;
 }
 
-.comments-panel-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	font-weight: 600;
-	margin-bottom: 0.5em;
+/* Collapses the sidebar column entirely when there are no comments to show. */
+body.no-comments {
+	grid-template-columns: minmax(0, 1fr);
 }
 
-.comments-panel-header > div {
+.comments-panel-footer {
+	flex: 0 0 auto;
 	display: flex;
-	align-items: center;
 	gap: 6px;
+	margin-top: 0.5em;
+	padding-top: 0.5em;
+	border-top: 1px solid var(--vscode-panel-border);
+}
+
+.comments-panel-footer #send-to-chat-btn {
+	flex: 1;
+	justify-content: center;
+}
+
+.comments-panel-header {
+	font-weight: 600;
+	margin-bottom: 0.5em;
 }
 
 #comments-list {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
 }
 
 .comment-item {
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
-	gap: 4px;
-	padding: 6px 4px;
-	border-bottom: 1px solid var(--vscode-panel-border);
+	gap: 6px;
+	padding: 8px 10px;
+	margin-bottom: 8px;
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+	border-radius: 6px;
+	background-color: var(--vscode-editor-background);
 }
 
-.comment-item blockquote {
-	margin: 0;
-	border-left: 3px solid var(--vscode-textBlockQuote-border);
-	padding-left: 8px;
-	opacity: 0.8;
+.comment-item:last-child {
+	margin-bottom: 0;
+}
+
+.comment-item-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.comment-item-tools {
+	display: flex;
+	gap: 2px;
+	flex-shrink: 0;
+	justify-content: flex-end;
 }
 
 .comment-comment {
 	flex: 1;
 }
 
-.comment-remove-btn {
-	align-self: flex-end;
+.comment-item-actions {
+	display: flex;
+	gap: 6px;
+	margin-top: 4px;
+	justify-content: flex-end;
 }

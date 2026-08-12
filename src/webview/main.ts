@@ -1,4 +1,5 @@
 import mermaid from 'mermaid';
+import type { WebviewMessages } from '../i18nMessages';
 
 declare function acquireVsCodeApi(): { postMessage(message: unknown): void };
 declare const crypto: { randomUUID?: () => string };
@@ -8,6 +9,8 @@ interface Comment {
 	quote: string;
 	comment: string;
 	createdAt: number;
+	lineStart?: number;
+	lineEnd?: number;
 }
 
 interface FontMessage {
@@ -17,9 +20,21 @@ interface FontMessage {
 }
 
 const vscodeApi = acquireVsCodeApi();
+const i18n = (window as unknown as { __i18n: WebviewMessages }).__i18n;
+
+const LINE_ELIGIBLE_TAGS = new Set(['P', 'LI', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'TD', 'TH', 'PRE']);
+
+interface LineRange {
+	start: number;
+	end: number;
+}
 
 let comments: Comment[] = [];
 let pendingQuote = '';
+let pendingRect: DOMRect | null = null;
+let pendingLineRange: LineRange | null = null;
+let hoveredLineBlock: HTMLElement | null = null;
+let editingId: string | null = null;
 
 function generateId(): string {
 	if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -73,6 +88,45 @@ function unwrapHighlightElement(mark: Element): void {
 	}
 	parent.removeChild(mark);
 	parent.normalize();
+}
+
+/** Walks up from a node to the nearest ancestor element stamped with source line data. */
+function findLineRange(node: Node | null): LineRange | null {
+	let el: Element | null = node instanceof Element ? node : node?.parentElement ?? null;
+	while (el) {
+		const startAttr = (el as HTMLElement).dataset?.lineStart;
+		const endAttr = (el as HTMLElement).dataset?.lineEnd;
+		if (startAttr && endAttr) {
+			return { start: Number(startAttr), end: Number(endAttr) };
+		}
+		el = el.parentElement;
+	}
+	return null;
+}
+
+/** Merges the line ranges found at both ends of a selection Range into a single covering range. */
+function computeLineRangeForRange(range: Range): LineRange | null {
+	const startInfo = findLineRange(range.startContainer);
+	const endInfo = findLineRange(range.endContainer);
+	if (!startInfo && !endInfo) {
+		return null;
+	}
+	return {
+		start: Math.min(startInfo?.start ?? Infinity, endInfo?.start ?? Infinity),
+		end: Math.max(startInfo?.end ?? -Infinity, endInfo?.end ?? -Infinity),
+	};
+}
+
+/** Finds the nearest line-eligible block ancestor (paragraph, list item, heading, etc.) for the hover-to-comment affordance. */
+function findEligibleLineBlock(target: EventTarget | null): HTMLElement | null {
+	let el = target instanceof Element ? target : null;
+	while (el && el.id !== 'content') {
+		if (LINE_ELIGIBLE_TAGS.has(el.tagName) && (el as HTMLElement).dataset.lineStart) {
+			return el as HTMLElement;
+		}
+		el = el.parentElement;
+	}
+	return null;
 }
 
 /** Locates the first occurrence of `quote` among #content's text nodes and returns a Range spanning it. */
@@ -205,24 +259,45 @@ function hideToolbar(): void {
 	}
 }
 
-function showToolbarAt(rect: DOMRect, quote: string): void {
-	pendingQuote = quote;
+function hideLineButton(): void {
+	const lineBtn = document.getElementById('comment-line-btn');
+	if (lineBtn) {
+		lineBtn.hidden = true;
+	}
+	hoveredLineBlock = null;
+}
+
+function positionAt(el: HTMLElement, rect: DOMRect, offsetTop = -36): void {
+	el.style.top = `${window.scrollY + rect.top + offsetTop}px`;
+	el.style.left = `${window.scrollX + rect.left}px`;
+}
+
+/** Positions an element at the bottom-right of a rect, e.g. the selection-triggered comment toolbar. */
+function positionBottomRightAt(el: HTMLElement, rect: DOMRect): void {
+	el.style.top = `${window.scrollY + rect.bottom + 6}px`;
+	el.style.left = `${window.scrollX + rect.right}px`;
+}
+
+function showToolbarAt(rect: DOMRect): void {
 	const toolbar = document.getElementById('comment-toolbar');
 	if (!toolbar) {
 		return;
 	}
+	pendingRect = rect;
 	toolbar.hidden = false;
-	toolbar.style.top = `${window.scrollY + rect.top - 36}px`;
-	toolbar.style.left = `${window.scrollX + rect.left}px`;
+	positionBottomRightAt(toolbar, rect);
 }
 
 function showCommentInput(): void {
 	hideToolbar();
+	hideLineButton();
 	const inputBox = document.getElementById('comment-input');
 	const textarea = document.getElementById('comment-input-text') as HTMLTextAreaElement | null;
-	if (!inputBox || !textarea) {
+	if (!inputBox || !textarea || !pendingRect) {
 		return;
 	}
+	// Fixes the input popover not tracking the selected text / hovered line: it now reuses the same rect the trigger button was shown at.
+	positionAt(inputBox, pendingRect);
 	inputBox.hidden = false;
 	textarea.value = '';
 	textarea.focus();
@@ -230,40 +305,97 @@ function showCommentInput(): void {
 
 function renderCommentsPanel(): void {
 	const listEl = document.getElementById('comments-list');
-	const countEl = document.getElementById('comments-count');
-	if (!listEl || !countEl) {
+	const titleEl = document.getElementById('comments-panel-title');
+	const panelEl = document.getElementById('comments-panel');
+	if (!listEl || !titleEl || !panelEl) {
 		return;
 	}
-	countEl.textContent = String(comments.length);
+	const hasComments = comments.length > 0;
+	panelEl.hidden = !hasComments;
+	document.body.classList.toggle('no-comments', !hasComments);
+
+	titleEl.textContent = i18n.commentsPanelHeaderTemplate.replace('{count}', String(comments.length));
 	listEl.innerHTML = '';
 	for (const entry of comments) {
 		const li = document.createElement('li');
 		li.className = 'comment-item';
 		li.dataset.commentId = entry.id;
 		li.addEventListener('click', (event) => {
-			if ((event.target as HTMLElement).closest('.comment-remove-btn')) {
+			if ((event.target as HTMLElement).closest('button, textarea')) {
 				return;
 			}
 			focusHighlightInContent(entry.id);
 		});
 
-		const quoteEl = document.createElement('blockquote');
-		quoteEl.textContent = entry.quote;
-
-		const commentEl = document.createElement('div');
-		commentEl.className = 'comment-comment';
-		commentEl.textContent = entry.comment;
+		const editBtn = document.createElement('button');
+		editBtn.type = 'button';
+		editBtn.className = 'comment-edit-btn icon-button';
+		editBtn.title = i18n.editTitle;
+		editBtn.innerHTML = '<span class="codicon codicon-edit"></span>';
+		editBtn.addEventListener('click', () => {
+			editingId = entry.id;
+			renderCommentsPanel();
+		});
 
 		const removeBtn = document.createElement('button');
 		removeBtn.type = 'button';
 		removeBtn.className = 'comment-remove-btn icon-button';
-		removeBtn.title = '删除';
-		removeBtn.innerHTML = '<span class="codicon codicon-close"></span>';
+		removeBtn.title = i18n.removeTitle;
+		removeBtn.innerHTML = '<span class="codicon codicon-trash"></span>';
 		removeBtn.addEventListener('click', () => {
 			vscodeApi.postMessage({ type: 'removeComment', id: entry.id });
 		});
 
-		li.append(quoteEl, commentEl, removeBtn);
+		const main = document.createElement('div');
+		main.className = 'comment-item-main';
+
+		if (entry.id === editingId) {
+			const textarea = document.createElement('textarea');
+			textarea.className = 'textarea-control';
+			textarea.rows = 2;
+			textarea.value = entry.comment;
+
+			const cancelBtn = document.createElement('button');
+			cancelBtn.type = 'button';
+			cancelBtn.className = 'btn btn-secondary';
+			cancelBtn.textContent = i18n.cancelButton;
+			cancelBtn.addEventListener('click', () => {
+				editingId = null;
+				renderCommentsPanel();
+			});
+
+			const saveBtn = document.createElement('button');
+			saveBtn.type = 'button';
+			saveBtn.className = 'btn btn-primary';
+			saveBtn.textContent = i18n.saveCommentButton;
+			saveBtn.addEventListener('click', () => {
+				const newComment = textarea.value.trim();
+				if (!newComment) {
+					return;
+				}
+				vscodeApi.postMessage({ type: 'editComment', id: entry.id, comment: newComment });
+				editingId = null;
+			});
+
+			const actions = document.createElement('div');
+			actions.className = 'comment-item-actions';
+			actions.append(cancelBtn, saveBtn);
+
+			main.append(textarea, actions);
+			li.appendChild(main);
+		} else {
+			const commentEl = document.createElement('div');
+			commentEl.className = 'comment-comment';
+			commentEl.textContent = entry.comment;
+			main.appendChild(commentEl);
+
+			const tools = document.createElement('div');
+			tools.className = 'comment-item-tools';
+			tools.append(editBtn, removeBtn);
+
+			li.append(main, tools);
+		}
+
 		listEl.appendChild(li);
 	}
 }
@@ -297,7 +429,49 @@ document.getElementById('content')?.addEventListener('mouseup', () => {
 		return;
 	}
 	const range = selection.getRangeAt(0);
-	showToolbarAt(range.getBoundingClientRect(), selection.toString());
+	pendingQuote = selection.toString();
+	pendingLineRange = computeLineRangeForRange(range);
+	hideLineButton();
+	// getBoundingClientRect() on a multi-line/wrapped range spans the whole block, so use the last line's own rect instead.
+	const rects = range.getClientRects();
+	const positionRect = rects.length > 0 ? rects[rects.length - 1] : range.getBoundingClientRect();
+	showToolbarAt(positionRect);
+});
+
+document.getElementById('content')?.addEventListener('mousemove', (event) => {
+	const selection = window.getSelection();
+	if (selection && !selection.isCollapsed && selection.toString().trim() !== '') {
+		return;
+	}
+	const block = findEligibleLineBlock(event.target);
+	if (block === hoveredLineBlock) {
+		return;
+	}
+	hoveredLineBlock = block;
+	const lineBtn = document.getElementById('comment-line-btn');
+	if (!lineBtn) {
+		return;
+	}
+	if (!block) {
+		lineBtn.hidden = true;
+		return;
+	}
+	const rect = block.getBoundingClientRect();
+	lineBtn.hidden = false;
+	lineBtn.style.top = `${window.scrollY + rect.top}px`;
+	lineBtn.style.left = `${window.scrollX + rect.right - 22}px`;
+});
+
+document.getElementById('comment-line-btn')?.addEventListener('click', () => {
+	if (!hoveredLineBlock) {
+		return;
+	}
+	pendingQuote = hoveredLineBlock.textContent?.trim() ?? '';
+	const startAttr = hoveredLineBlock.dataset.lineStart;
+	const endAttr = hoveredLineBlock.dataset.lineEnd;
+	pendingLineRange = startAttr && endAttr ? { start: Number(startAttr), end: Number(endAttr) } : null;
+	pendingRect = hoveredLineBlock.getBoundingClientRect();
+	showCommentInput();
 });
 
 document.getElementById('add-comment-btn')?.addEventListener('click', showCommentInput);
@@ -316,11 +490,21 @@ document.getElementById('comment-submit-btn')?.addEventListener('click', () => {
 		return;
 	}
 	const id = generateId();
-	vscodeApi.postMessage({ type: 'addComment', id, quote: pendingQuote, comment });
+	vscodeApi.postMessage({
+		type: 'addComment',
+		id,
+		quote: pendingQuote,
+		comment,
+		lineStart: pendingLineRange?.start,
+		lineEnd: pendingLineRange?.end,
+	});
 	const inputBox = document.getElementById('comment-input');
 	if (inputBox) {
 		inputBox.hidden = true;
 	}
+	pendingQuote = '';
+	pendingRect = null;
+	pendingLineRange = null;
 });
 
 document.getElementById('send-to-chat-btn')?.addEventListener('click', () => {

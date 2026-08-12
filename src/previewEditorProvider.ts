@@ -4,6 +4,7 @@ import { buildWebviewHtml } from './htmlTemplate';
 import { getFontConfig, type FontConfig } from './config';
 import { CommentStore } from './commentStore';
 import { sendCommentsToCopilotChat } from './copilotChatBridge';
+import { getExtensionMessages, getLocale, getWebviewMessages } from './i18n';
 
 export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorProvider {
 	public static readonly viewType = 'richMarkdownPreview.editor';
@@ -55,7 +56,9 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 				webviewPanel.webview,
 				this.context.extensionUri,
 				html,
-				getFontConfig()
+				getFontConfig(),
+				getWebviewMessages(),
+				getLocale()
 			);
 			postComments();
 		};
@@ -73,11 +76,15 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 		const messageSub = webviewPanel.webview.onDidReceiveMessage(async (message) => {
 			switch (message.type) {
 				case 'addComment':
-					this.commentStore.add(uriKey, message.id, message.quote, message.comment);
+					this.commentStore.add(uriKey, message.id, message.quote, message.comment, message.lineStart, message.lineEnd);
 					postComments();
 					break;
 				case 'removeComment':
 					this.commentStore.remove(uriKey, message.id);
+					postComments();
+					break;
+				case 'editComment':
+					this.commentStore.update(uriKey, message.id, message.comment);
 					postComments();
 					break;
 				case 'clearComments':
@@ -85,7 +92,7 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 					postComments();
 					break;
 				case 'sendToChat': {
-					await sendCommentsToCopilotChat(document.uri, this.commentStore.list(uriKey));
+					await sendCommentsToCopilotChat(document, this.commentStore.list(uriKey), getExtensionMessages());
 					break;
 				}
 			}
