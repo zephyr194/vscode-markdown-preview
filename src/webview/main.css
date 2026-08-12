@@ -1,0 +1,297 @@
+body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	align-items: start;
+	margin: 0;
+	font-family: var(--md-font-family, var(--vscode-font-family)), var(--md-font-family-cjk, system-ui, sans-serif);
+	font-size: var(--md-font-size, var(--vscode-editor-font-size));
+	line-height: var(--md-line-height, 1.6);
+	color: var(--vscode-editor-foreground);
+	background-color: var(--vscode-editor-background);
+}
+
+#content {
+	grid-column: 1;
+	min-width: 0;
+	padding: 1rem 1.5rem 6rem;
+}
+
+#content a {
+	color: var(--vscode-textLink-foreground);
+	text-decoration: none;
+}
+
+#content a:hover {
+	text-decoration: underline;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+	font-weight: 600;
+	margin-top: 24px;
+	margin-bottom: 16px;
+	line-height: 1.25;
+}
+
+#content h1 {
+	font-size: 2em;
+	margin-top: 0;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+#content h2 {
+	font-size: 1.5em;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+#content h3 {
+	font-size: 1.25em;
+}
+
+#content h4 {
+	font-size: 1em;
+}
+
+#content h5 {
+	font-size: 0.875em;
+}
+
+#content h6 {
+	font-size: 0.85em;
+}
+
+#content p,
+#content ul,
+#content ol,
+#content pre {
+	margin-top: 0;
+	margin-bottom: 16px;
+}
+
+#content li p {
+	margin-bottom: 0.7em;
+}
+
+#content ul ul:first-child,
+#content ul ol:first-child,
+#content ol ul:first-child,
+#content ol ol:first-child {
+	margin-bottom: 0;
+}
+
+#content hr {
+	height: 1px;
+	border: 0;
+	border-bottom: 1px solid var(--vscode-panel-border);
+	margin: 1.5em 0;
+}
+
+#content img,
+#content video {
+	max-width: 100%;
+}
+
+#content sub,
+#content sup {
+	line-height: 0;
+}
+
+#content code {
+	font-family: var(--md-font-family-code, var(--vscode-editor-font-family));
+	background-color: var(--vscode-textCodeBlock-background);
+	padding: 0.1em 0.3em;
+	border-radius: 3px;
+}
+
+#content pre {
+	position: relative;
+	background-color: var(--vscode-textCodeBlock-background);
+	border: 1px solid var(--vscode-widget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+	padding: 0.75em 1em;
+	border-radius: 4px;
+	overflow-x: auto;
+}
+
+#content pre code {
+	background: none;
+	padding: 0;
+}
+
+#content pre.mermaid {
+	background: none;
+	border: none;
+	text-align: center;
+}
+
+#content blockquote {
+	border-left: 3px solid var(--vscode-textBlockQuote-border);
+	background-color: var(--vscode-textBlockQuote-background);
+	margin: 0.5em 0;
+	padding: 0.4em 1em;
+}
+
+#content table {
+	border-collapse: collapse;
+	margin-bottom: 0.7em;
+}
+
+#content th {
+	text-align: left;
+	border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+#content th,
+#content td {
+	padding: 5px 10px;
+}
+
+#content tbody tr + tr td {
+	border-top: 1px solid var(--vscode-panel-border);
+}
+
+.icon-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: none;
+	border-radius: 5px;
+	background: transparent !important;
+	color: var(--vscode-icon-foreground) !important;
+	cursor: pointer;
+}
+
+.icon-button:hover {
+	background-color: var(--vscode-toolbar-hoverBackground) !important;
+}
+
+.comment-highlight {
+	background-color: var(--vscode-editor-findMatchHighlightBackground, rgba(255, 224, 130, 0.4));
+	color: inherit;
+	cursor: pointer;
+	border-radius: 2px;
+}
+
+.comment-flash {
+	outline: 2px solid var(--vscode-focusBorder);
+	outline-offset: 1px;
+}
+
+.comment-toolbar,
+.comment-input {
+	position: absolute;
+	z-index: 10;
+	background-color: var(--vscode-editorWidget-background);
+	border: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+	border-radius: 3px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	padding: 4px;
+}
+
+.comment-toolbar button,
+.comment-input button,
+.comments-panel button.primary-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	border: none;
+	border-radius: 5px;
+	padding: 4px 10px;
+	cursor: pointer;
+	font-size: 0.9em;
+}
+
+.comment-toolbar button:hover,
+.comment-input button:hover,
+.comments-panel button.primary-btn:hover {
+	background-color: var(--vscode-button-hoverBackground);
+}
+
+.comment-input {
+	width: 260px;
+}
+
+.comment-input textarea {
+	width: 100%;
+	box-sizing: border-box;
+	background-color: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+	border: 1px solid var(--vscode-input-border);
+	border-radius: 3px;
+	resize: vertical;
+	font-family: inherit;
+}
+
+.comment-input-actions {
+	display: flex;
+	gap: 6px;
+	margin-top: 4px;
+	justify-content: flex-end;
+}
+
+.comments-panel {
+	grid-column: 2;
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	overflow-y: auto;
+	box-sizing: border-box;
+	background-color: var(--vscode-editorWidget-background);
+	border-left: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+	padding: 0.75em 1em;
+}
+
+.comments-panel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 600;
+	margin-bottom: 0.5em;
+}
+
+.comments-panel-header > div {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+#comments-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.comment-item {
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 4px;
+	padding: 6px 4px;
+	border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.comment-item blockquote {
+	margin: 0;
+	border-left: 3px solid var(--vscode-textBlockQuote-border);
+	padding-left: 8px;
+	opacity: 0.8;
+}
+
+.comment-comment {
+	flex: 1;
+}
+
+.comment-remove-btn {
+	align-self: flex-end;
+}

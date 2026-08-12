@@ -1,0 +1,121 @@
+{
+  "name": "vscode-markdown-preview",
+  "displayName": "Markdown Rich Preview",
+  "description": "Rich Markdown preview with LaTeX/Mermaid support, theme-aware, editable annotations sent to Copilot Chat.",
+  "version": "0.1.0",
+  "publisher": "your-publisher",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "richMarkdownPreview.editor",
+        "displayName": "Markdown Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "commands": [
+      {
+        "command": "richMarkdownPreview.showSource",
+        "title": "Markdown Rich Preview: Edit Source",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "richMarkdownPreview.showPreview",
+        "title": "Markdown Rich Preview: Open Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "richMarkdownPreview.clearComments",
+        "title": "Markdown Rich Preview: Clear Comments"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "richMarkdownPreview.showSource",
+          "when": "activeCustomEditorId == richMarkdownPreview.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "richMarkdownPreview.showPreview",
+          "when": "resourceLangId == markdown && activeCustomEditorId != richMarkdownPreview.editor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Markdown Rich Preview",
+      "properties": {
+        "richMarkdownPreview.fontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "UI text font family used in the preview. Leave empty to follow the editor font."
+        },
+        "richMarkdownPreview.chineseFontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family used for Chinese (CJK) text in the preview. Leave empty to follow the OS system font."
+        },
+        "richMarkdownPreview.codeFontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family used for code blocks in the preview. Leave empty to follow the editor's (monospace) font."
+        },
+        "richMarkdownPreview.fontSize": {
+          "type": "number",
+          "default": 0,
+          "description": "Font size (px) used in the preview. Set to 0 to follow the editor font size."
+        },
+        "richMarkdownPreview.lineHeight": {
+          "type": "number",
+          "default": 1.6,
+          "description": "Line height used in the preview."
+        },
+        "richMarkdownPreview.openAsDefault": {
+          "type": "boolean",
+          "default": false,
+          "description": "Open .md files with this preview by default instead of the native text editor."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "vscode:prepublish": "node esbuild.js --production"
+  },
+  "dependencies": {
+    "unified": "^11.0.5",
+    "remark-parse": "^11.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "remark-rehype": "^11.1.1",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-stringify": "^10.0.1",
+    "unist-util-visit": "^5.0.0",
+    "katex": "^0.16.11",
+    "mermaid": "^11.4.1",
+    "@vscode/codicons": "^0.0.36"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@types/node": "^20.14.0",
+    "@types/hast": "^3.0.4",
+    "esbuild": "^0.23.1",
+    "typescript": "^5.5.4"
+  }
+}
