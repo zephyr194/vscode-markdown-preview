@@ -8,9 +8,9 @@ export interface FontConfig {
 	lineHeight: number;
 }
 
-const SECTION = 'richMarkdownPreview';
+const SECTION = 'copilotMarkdownPreview';
 const EDITOR_ASSOCIATION_KEY = '*.md';
-const CUSTOM_EDITOR_VIEW_TYPE = 'richMarkdownPreview.editor';
+const CUSTOM_EDITOR_VIEW_TYPE = 'copilotMarkdownPreview.editor';
 
 export function getFontConfig(): FontConfig {
 	const config = vscode.workspace.getConfiguration(SECTION);

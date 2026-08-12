@@ -3,7 +3,7 @@ import { MarkdownPreviewEditorProvider } from './previewEditorProvider';
 import { CommentStore } from './commentStore';
 import { registerConfigWatcher, isOpenAsDefaultEnabled, syncEditorAssociation } from './config';
 
-const CUSTOM_EDITOR_VIEW_TYPE = 'richMarkdownPreview.editor';
+const CUSTOM_EDITOR_VIEW_TYPE = 'copilotMarkdownPreview.editor';
 
 function getActiveResourceUri(): vscode.Uri | undefined {
 	const tab = vscode.window.tabGroups.activeTabGroup.activeTab;
@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('richMarkdownPreview.showSource', async () => {
+		vscode.commands.registerCommand('copilotMarkdownPreview.showSource', async () => {
 			const uri = getActiveResourceUri();
 			if (!uri) {
 				return;
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext): void {
 			const viewColumn = vscode.window.tabGroups.activeTabGroup.viewColumn;
 			await vscode.commands.executeCommand('vscode.openWith', uri, 'default', viewColumn);
 		}),
-		vscode.commands.registerCommand('richMarkdownPreview.showPreview', async () => {
+		vscode.commands.registerCommand('copilotMarkdownPreview.showPreview', async () => {
 			const uri = getActiveResourceUri();
 			if (!uri) {
 				return;
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext): void {
 			const viewColumn = vscode.window.tabGroups.activeTabGroup.viewColumn;
 			await vscode.commands.executeCommand('vscode.openWith', uri, CUSTOM_EDITOR_VIEW_TYPE, viewColumn);
 		}),
-		vscode.commands.registerCommand('richMarkdownPreview.clearComments', () => {
+		vscode.commands.registerCommand('copilotMarkdownPreview.clearComments', () => {
 			const uri = getActiveResourceUri();
 			if (!uri) {
 				return;

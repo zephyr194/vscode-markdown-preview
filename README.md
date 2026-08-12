@@ -52,12 +52,12 @@
 
 | Setting | Description |
 | --- | --- |
-| `richMarkdownPreview.fontFamily` | General/UI text font family. Empty follows the editor font. |
-| `richMarkdownPreview.chineseFontFamily` | Font family for Chinese (CJK) text. Empty follows the OS system font. |
-| `richMarkdownPreview.codeFontFamily` | Font family for code blocks. Empty follows the editor's (monospace) font. |
-| `richMarkdownPreview.fontSize` | Preview font size in px. `0` follows the editor font size. |
-| `richMarkdownPreview.lineHeight` | Preview line height. |
-| `richMarkdownPreview.openAsDefault` | Open `.md` files with this preview by default. |
+| `copilotMarkdownPreview.fontFamily` | General/UI text font family. Empty follows the editor font. |
+| `copilotMarkdownPreview.chineseFontFamily` | Font family for Chinese (CJK) text. Empty follows the OS system font. |
+| `copilotMarkdownPreview.codeFontFamily` | Font family for code blocks. Empty follows the editor's (monospace) font. |
+| `copilotMarkdownPreview.fontSize` | Preview font size in px. `0` follows the editor font size. |
+| `copilotMarkdownPreview.lineHeight` | Preview line height. |
+| `copilotMarkdownPreview.openAsDefault` | Open `.md` files with this preview by default. |
 
 > **Known limitation**: enabling `openAsDefault` makes `.md` files open in this
 > extension's custom editor instead of VS Code's native text editor. Commands that
@@ -68,9 +68,9 @@
 
 ## Commands
 
-- `Markdown Rich Preview: Edit Source` / `Markdown Rich Preview: Open Preview` —
+- `Copilot Markdown Preview: Edit Source` / `Copilot Markdown Preview: Open Preview` —
   editor title bar toggle.
-- `Markdown Rich Preview: Clear Comments` — clears comments collected for the active file.
+- `Copilot Markdown Preview: Clear Comments` — clears comments collected for the active file.
 
 ## Development
 

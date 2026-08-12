@@ -2,7 +2,7 @@
   "name": "copilot-markdown-preview",
   "displayName": "Copilot Markdown Preview",
   "description": "%extension.description%",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "zephyr14",
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -31,7 +31,7 @@
   "contributes": {
     "customEditors": [
       {
-        "viewType": "richMarkdownPreview.editor",
+        "viewType": "copilotMarkdownPreview.editor",
         "displayName": "%customEditor.displayName%",
         "selector": [
           {
@@ -43,30 +43,30 @@
     ],
     "commands": [
       {
-        "command": "richMarkdownPreview.showSource",
+        "command": "copilotMarkdownPreview.showSource",
         "title": "%command.showSource.title%",
         "icon": "$(edit)"
       },
       {
-        "command": "richMarkdownPreview.showPreview",
+        "command": "copilotMarkdownPreview.showPreview",
         "title": "%command.showPreview.title%",
         "icon": "$(open-preview)"
       },
       {
-        "command": "richMarkdownPreview.clearComments",
+        "command": "copilotMarkdownPreview.clearComments",
         "title": "%command.clearComments.title%"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "richMarkdownPreview.showSource",
-          "when": "activeCustomEditorId == richMarkdownPreview.editor",
+          "command": "copilotMarkdownPreview.showSource",
+          "when": "activeCustomEditorId == copilotMarkdownPreview.editor",
           "group": "navigation"
         },
         {
-          "command": "richMarkdownPreview.showPreview",
-          "when": "resourceLangId == markdown && activeCustomEditorId != richMarkdownPreview.editor",
+          "command": "copilotMarkdownPreview.showPreview",
+          "when": "resourceLangId == markdown && activeCustomEditorId != copilotMarkdownPreview.editor",
           "group": "navigation"
         }
       ]
@@ -74,32 +74,32 @@
     "configuration": {
       "title": "%configuration.title%",
       "properties": {
-        "richMarkdownPreview.fontFamily": {
+        "copilotMarkdownPreview.fontFamily": {
           "type": "string",
           "default": "",
           "description": "%configuration.fontFamily.description%"
         },
-        "richMarkdownPreview.chineseFontFamily": {
+        "copilotMarkdownPreview.chineseFontFamily": {
           "type": "string",
           "default": "",
           "description": "%configuration.chineseFontFamily.description%"
         },
-        "richMarkdownPreview.codeFontFamily": {
+        "copilotMarkdownPreview.codeFontFamily": {
           "type": "string",
           "default": "",
           "description": "%configuration.codeFontFamily.description%"
         },
-        "richMarkdownPreview.fontSize": {
+        "copilotMarkdownPreview.fontSize": {
           "type": "number",
           "default": 0,
           "description": "%configuration.fontSize.description%"
         },
-        "richMarkdownPreview.lineHeight": {
+        "copilotMarkdownPreview.lineHeight": {
           "type": "number",
           "default": 1.6,
           "description": "%configuration.lineHeight.description%"
         },
-        "richMarkdownPreview.openAsDefault": {
+        "copilotMarkdownPreview.openAsDefault": {
           "type": "boolean",
           "default": false,
           "description": "%configuration.openAsDefault.description%"
