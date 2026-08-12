@@ -1,6 +1,16 @@
-# vscode-markdown-preview
+<p align="center">
+  <img src="icon.png" width="96" height="96" alt="Copilot Markdown Preview icon" />
+</p>
 
-Rich Markdown preview extension for VS Code.
+<h1 align="center">Copilot Markdown Preview</h1>
+
+<p align="center">
+  Rich Markdown preview for VS Code — theme-aware rendering, LaTeX/Mermaid support,
+  and inline comments you send straight to Copilot Chat as real file attachments.
+</p>
+
+![license](https://img.shields.io/badge/license-Apache--2.0-blue)
+![vscode](https://img.shields.io/badge/VS%20Code-%5E1.90.0-007ACC)
 
 ## Features
 
@@ -28,6 +38,15 @@ Rich Markdown preview extension for VS Code.
   colored chip — this is a VS Code platform limitation, not a bug in this extension.
 - Rich rendering: GitHub-flavored Markdown, LaTeX math (KaTeX), and Mermaid diagrams,
   styled to match VS Code's native look (codicon icons, native typography/spacing).
+
+## Installation
+
+- **From the Marketplace**: search for `Copilot Markdown Preview` in the Extensions
+  view (`⇧⌘X` / `Ctrl+Shift+X`), or install directly:
+  `ext install zephyr14.copilot-markdown-preview`.
+- **From a `.vsix` file**: download/build a package (see [Development](#development))
+  and run `code --install-extension copilot-markdown-preview-<version>.vsix`, or use
+  "Install from VSIX..." in the Extensions view's `...` menu.
 
 ## Settings
 
@@ -61,3 +80,10 @@ npm run watch
 ```
 
 Press `F5` in VS Code to launch the Extension Development Host.
+
+Package a `.vsix` locally with `npx @vscode/vsce package` (requires the
+`vscode:prepublish` build to succeed, i.e. `npm run compile` with no errors).
+
+## License
+
+[Apache-2.0](LICENSE)
