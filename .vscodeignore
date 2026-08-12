@@ -5,4 +5,5 @@ docs/**
 esbuild.js
 tsconfig.json
 .gitignore
+icon.svg
 **/*.map

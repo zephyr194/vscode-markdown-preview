@@ -1,10 +1,25 @@
 {
-  "name": "vscode-markdown-preview",
-  "displayName": "Markdown Rich Preview",
+  "name": "copilot-markdown-preview",
+  "displayName": "Copilot Markdown Preview",
   "description": "%extension.description%",
   "version": "0.1.0",
-  "publisher": "your-publisher",
+  "publisher": "zephyr14",
   "license": "Apache-2.0",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zephyr194/vscode-markdown-preview.git"
+  },
+  "keywords": [
+    "markdown",
+    "markdown preview",
+    "ai",
+    "copilot",
+    "copilot chat",
+    "plan",
+    "latex",
+    "mermaid"
+  ],
   "engines": {
     "vscode": "^1.90.0"
   },

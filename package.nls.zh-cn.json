@@ -1,5 +1,5 @@
 {
-	"extension.description": "富文本 Markdown 预览，支持 LaTeX/Mermaid、跟随主题，可将评论发送到 Copilot Chat。",
+	"extension.description": "AI 辅助的 Markdown 预览：支持 LaTeX/Mermaid 渲染、跟随主题，一键把批注整理成计划发送给 Copilot Chat。",
 	"customEditor.displayName": "Markdown 预览",
 	"command.showSource.title": "Markdown Rich Preview: 编辑源码",
 	"command.showPreview.title": "Markdown Rich Preview: 打开预览",

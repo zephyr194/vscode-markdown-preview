@@ -1,5 +1,5 @@
 {
-	"extension.description": "Rich Markdown preview with LaTeX/Mermaid support, theme-aware, editable comments sent to Copilot Chat.",
+	"extension.description": "AI-assisted Markdown preview: LaTeX/Mermaid rendering, theme-aware styling, and inline comments you turn into a Copilot Chat plan with one click.",
 	"customEditor.displayName": "Markdown Preview",
 	"command.showSource.title": "Markdown Rich Preview: Edit Source",
 	"command.showPreview.title": "Markdown Rich Preview: Open Preview",
