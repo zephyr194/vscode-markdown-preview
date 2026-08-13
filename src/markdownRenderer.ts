@@ -51,18 +51,31 @@ const sourceLinePlugin: Plugin<[], Root> = () => (tree) => {
 	});
 };
 
-const processor = unified()
-	.use(remarkParse)
-	.use(remarkGfm)
-	.use(remarkMath)
-	.use(remarkRehype, { allowDangerousHtml: true })
-	.use(sourceLinePlugin)
-	.use(rehypeRaw)
-	.use(mermaidBlockPlugin)
-	.use(rehypeKatex)
-	.use(rehypeStringify, { allowDangerousHtml: true });
+/** Rewrites `<img src>` through the caller-supplied resolver, e.g. to a `webview.asWebviewUri` so relative images load under the webview's CSP. */
+const imageSrcPlugin = (resolveImageSrc: (src: string) => string): Plugin<[], Root> => () => (tree) => {
+	visit(tree, 'element', (node: Element) => {
+		const src = node.tagName === 'img' && node.properties?.src;
+		if (typeof src === 'string') {
+			node.properties!.src = resolveImageSrc(src);
+		}
+	});
+};
 
-export async function renderMarkdownToHtml(source: string): Promise<string> {
+export async function renderMarkdownToHtml(
+	source: string,
+	resolveImageSrc: (src: string) => string = (src) => src
+): Promise<string> {
+	const processor = unified()
+		.use(remarkParse)
+		.use(remarkGfm)
+		.use(remarkMath)
+		.use(remarkRehype, { allowDangerousHtml: true })
+		.use(sourceLinePlugin)
+		.use(rehypeRaw)
+		.use(mermaidBlockPlugin)
+		.use(imageSrcPlugin(resolveImageSrc))
+		.use(rehypeKatex)
+		.use(rehypeStringify, { allowDangerousHtml: true });
 	const file = await processor.process(source);
 	return String(file);
 }

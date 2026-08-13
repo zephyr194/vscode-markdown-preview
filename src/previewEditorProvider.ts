@@ -35,13 +35,25 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 		webviewPanel: vscode.WebviewPanel,
 		_token: vscode.CancellationToken
 	): Promise<void> {
+		webviewPanel.iconPath = vscode.Uri.joinPath(this.context.extensionUri, 'icon.png');
+
+		const documentDir = vscode.Uri.joinPath(document.uri, '..');
+		const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
 		webviewPanel.webview.options = {
 			enableScripts: true,
-			localResourceRoots: [this.context.extensionUri],
+			localResourceRoots: [this.context.extensionUri, workspaceFolder?.uri ?? documentDir],
 		};
 		this.panels.add(webviewPanel);
 
 		const uriKey = document.uri.toString();
+
+		// leaves absolute URLs (http(s):, data:) untouched; resolves everything else against the document's folder
+		const resolveImageSrc = (src: string): string => {
+			if (/^[a-z][a-z0-9+.-]*:/i.test(src)) {
+				return src;
+			}
+			return webviewPanel.webview.asWebviewUri(vscode.Uri.joinPath(documentDir, src)).toString();
+		};
 
 		const postComments = () => {
 			webviewPanel.webview.postMessage({
@@ -51,7 +63,7 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 		};
 
 		const render = async (text: string) => {
-			const html = await renderMarkdownToHtml(text);
+			const html = await renderMarkdownToHtml(text, resolveImageSrc);
 			webviewPanel.webview.html = buildWebviewHtml(
 				webviewPanel.webview,
 				this.context.extensionUri,
@@ -67,7 +79,7 @@ export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorPro
 
 		const changeSub = vscode.workspace.onDidChangeTextDocument((event) => {
 			if (event.document.uri.toString() === uriKey) {
-				renderMarkdownToHtml(event.document.getText()).then((html) => {
+				renderMarkdownToHtml(event.document.getText(), resolveImageSrc).then((html) => {
 					webviewPanel.webview.postMessage({ type: 'update', html });
 				});
 			}
