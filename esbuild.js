@@ -21,6 +21,14 @@ function copyCodiconAssets() {
 	fs.cpSync(path.join(srcDir, 'codicon.ttf'), path.join(destDir, 'codicon.ttf'));
 }
 
+// src/** is excluded from the packaged .vsix (.vscodeignore), so main.css must
+// be copied into dist/ or the webview loses all styling once installed.
+function copyMainCss() {
+	const destDir = path.join(__dirname, 'dist', 'webview');
+	fs.mkdirSync(destDir, { recursive: true });
+	fs.cpSync(path.join(__dirname, 'src', 'webview', 'main.css'), path.join(destDir, 'main.css'));
+}
+
 async function main() {
 	const extensionCtx = await esbuild.context({
 		entryPoints: ['src/extension.ts'],
@@ -47,6 +55,7 @@ async function main() {
 
 	copyKatexAssets();
 	copyCodiconAssets();
+	copyMainCss();
 
 	if (watch) {
 		await extensionCtx.watch();

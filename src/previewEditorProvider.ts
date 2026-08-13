@@ -7,7 +7,7 @@ import { sendCommentsToCopilotChat } from './copilotChatBridge';
 import { getExtensionMessages, getLocale, getWebviewMessages } from './i18n';
 
 export class MarkdownPreviewEditorProvider implements vscode.CustomTextEditorProvider {
-	public static readonly viewType = 'copilotMarkdownPreview.editor';
+	public static readonly viewType = 'copilot.markdown.preview.editor';
 
 	private readonly panels = new Set<vscode.WebviewPanel>();
 

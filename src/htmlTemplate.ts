@@ -29,7 +29,7 @@ export function buildWebviewHtml(
 ): string {
 	const nonce = getNonce();
 	const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'main.js'));
-	const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'src', 'webview', 'main.css'));
+	const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'main.css'));
 	const katexCssUri = webview.asWebviewUri(
 		vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'katex', 'katex.min.css')
 	);

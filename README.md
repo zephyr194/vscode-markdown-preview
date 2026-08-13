@@ -52,12 +52,12 @@
 
 | Setting | Description |
 | --- | --- |
-| `copilotMarkdownPreview.fontFamily` | General/UI text font family. Empty follows the editor font. |
-| `copilotMarkdownPreview.chineseFontFamily` | Font family for Chinese (CJK) text. Empty follows the OS system font. |
-| `copilotMarkdownPreview.codeFontFamily` | Font family for code blocks. Empty follows the editor's (monospace) font. |
-| `copilotMarkdownPreview.fontSize` | Preview font size in px. `0` follows the editor font size. |
-| `copilotMarkdownPreview.lineHeight` | Preview line height. |
-| `copilotMarkdownPreview.openAsDefault` | Open `.md` files with this preview by default. |
+| `copilot.markdown.preview.fontFamily` | General/UI text font family. Empty follows the editor font. |
+| `copilot.markdown.preview.chineseFontFamily` | Font family for Chinese (CJK) text. Empty follows the OS system font. |
+| `copilot.markdown.preview.codeFontFamily` | Font family for code blocks. Empty follows the editor's (monospace) font. |
+| `copilot.markdown.preview.fontSize` | Preview font size in px. `0` follows the editor font size. |
+| `copilot.markdown.preview.lineHeight` | Preview line height. |
+| `copilot.markdown.preview.openAsDefault` | Open `.md` files with this preview by default. |
 
 > **Known limitation**: enabling `openAsDefault` makes `.md` files open in this
 > extension's custom editor instead of VS Code's native text editor. Commands that
